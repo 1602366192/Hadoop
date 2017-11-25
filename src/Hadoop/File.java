@@ -1,8 +1,10 @@
 package Hadoop;
 
-import org.apache.hadoop.conf.*;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.io.*;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.io.IOUtils;
 
 import java.net.URI;
 
@@ -25,7 +27,7 @@ public class File {
         }
     }
 
-    public static void loc() throws Exception {
+    public static void infoLoc() throws Exception {
         String uri = "hdfs://localhost:9000/spark.txt";
         Configuration conf = new Configuration();
 
@@ -41,6 +43,21 @@ public class File {
         for(int i=0;i<blockLen;i++){
             String[] hosts = blkLocations[i].getHosts();
             System.out.println("block_"+i+"_location:"+hosts[0]);
+        }
+
+    }
+
+    public static void infoNode() throws Exception {
+
+        Configuration conf=new Configuration();
+        DistributedFileSystem hdfs = new DistributedFileSystem();
+        String uri = "hdfs://localhost:9000/";
+        hdfs.initialize(new URI(uri), conf);
+
+        DatanodeInfo[] dataNodeStats = hdfs.getDataNodeStats();
+
+        for(int i=0;i<dataNodeStats.length;i++){
+            System.out.println("DataNode_"+i+"_Name:"+dataNodeStats[i].getHostName());
         }
 
     }
